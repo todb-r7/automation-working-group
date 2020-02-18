@@ -54,9 +54,13 @@ if ($options{help} or @ARGV > 0)
        "Options :\n" .
        "  -?, -h, --help                Display this help and exit.\n" .
        "  -f, --files                   Write output to individual files instead of to STDOUT.\n" .
-       "  -s, --spec <spec>             Output JSON that conforms to specified specification (defaults to $data_version).\n";
+       "  -s, --spec <spec>             Output JSON that conforms to specified specification (defaults to $data_version).\n" .
+       "  -v, --vendor <vendor>         Use <vendor> as the specified vendor instead of '$vendor'.\n";
   exit 1;
 }
+
+$vendor = $options{vendor} if (exists $options{vendor});
+
 
 
 ######################################################################
@@ -97,7 +101,7 @@ while (@lines)
     $product = $fields[1];
     $version = $fields[2];
     $problem_type = $fields[3];
-    push(@urls, split(/\s*,\s*/, $fields[4]));
+    push(@urls, split(/\s+/, $fields[4]));
     $description = $fields[5];
   }
   else
@@ -123,7 +127,7 @@ while (@lines)
     $line = shift @lines or die "*** Incomplete entry for $id at line $l! ***\n";
     $l++;
     die "*** Invalid content in line $l ($line)! ***\n" unless ($line =~ /^\s*\[REFERENCES\]\s*:\s*(.+?)\s*$/);
-    @urls = split(/\s*,\s*/, $1);
+    @urls = split(/\s+/, $1);
 
     $line = shift @lines or die "*** Incomplete entry for $id at line $l! ***\n";
     $l++;
